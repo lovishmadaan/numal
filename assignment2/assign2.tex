@@ -1,0 +1,145 @@
+\documentclass{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage{tabu}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{amssymb}
+\usepackage{newcent}
+
+
+\title{COL726 Homework 2}
+\author{Lovish Madaan \\ \texttt{2015CS50286}}
+\date{}
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+    \item The full SVD gives a decomposition of the form $A = U\Sigma V^T$ where both $U$ and $V$ are orthogonal and $\Sigma$ is diagonal.\\
+    Also, the direction of minimum or maximum distance to the surface of a hyperellipse from the origin is along the principal semiaxes.
+    \begin{enumerate}[label=(\alph*)]
+        \item Using $A = U\Sigma V^T$ and the fact that SVD exists for every matrix, we can see that the unit sphere in $\mathbb{R}^n$ under a linear transformation by any $m \times n$ matrix $A$ is a hyperellipse. $V^T$ preserves the unit sphere since it is orthogonal. The diagonal matrix $\Sigma$ stretches the $n$ orthogonal axes by weights $\sigma_1, \cdots, \sigma_n$ to form a hyperellipse. The final matrix $U$ rotates or reflects this hyperellipse since $U$ is orthogonal.\\
+        Also,
+        $$\min_{x \subset S_k} \frac{||Ax||_2}{||x||_2} \equiv \min_{x \subset S_k, ||x||_2 = 1} ||Ax||_2$$
+        $||x||_2 = 1$ is a unit sphere and $Ax$ is a hyperellipse. We want to find the vector $x$ which has the minimum $||Ax||_2$ given $||x||_2 = 1$. Clearly it is along one of the semiaxes of the hyperellipse. But since $x \subset S_k$, $Ax$ will lie on the hyperellipse whose basis is spanned by $u_1, u_2, \cdots, u_k$ and the minimum distance is the shortest semiaxes lying in the range of $u_1, u_2, \cdots, u_k$ which is
+        $$min(||\sigma_1u_1||_2, ||\sigma_2u_2||_2, \cdots, ||\sigma_ku_k||_2) = min(\sigma_1, \sigma_2, \cdots, \sigma_k) = \sigma_k$$
+        \item Any $k$-dimensional subspace $S \subset \mathbb{R}^n$ will have $k$ linearly independent vectors as its basis. These $k$ vectors can be formed by choosing atleast $k$ vectors from $u_1, u_2, \cdots, u_n$ since these form a basis for $\mathbb{R}^n$ as they are orthogonal. Now, atleast 1 of these vectors will be chosen from $u_k, u_{k + 1}, \cdots, u_n$ because the rest are only $k - 1$ vectors. Using the result from part (a), we will have
+        $$\sigma_n \leq \min_{x \subset S, ||x||_2 = 1} ||Ax||_2 \leq \sigma_k$$
+        So, no matter what subspace $S$ you choose, there will exist atleast one vector $x$ with $||x||_2 = 1$ in that subspace such that
+        $$||Ax||_2 \leq \sigma_k$$ where the equality is satisfied when the subspace $S$ has basis $u_1, u_2, \cdots, u_k$.
+    \end{enumerate}
+    \clearpage
+    \item Let us denote $\{a_1, a_2, \cdots\}$ by $A$ and $\{b_1, b_2, \cdots\}$ by $B$. Also, since the subspaces S and T are complementary, any vector $v \subset \mathbb{R}^m$ can be written as sum of 2 vectors - one lying in $S$ and another in $T$.
+    \begin{enumerate}[label=(\alph*)]
+        \item First, we'll prove that $A \cup B$ is a linearly independent set using contradiction. Suppose $A \cup B$ is not linearly independent. Then there exists a vector $k = a_i \; \textrm{or} \; b_i$ lying completely in $S$ or $T$ such that
+        $$k = \sum_{i, a_i \neq k} \alpha_ia_i + \sum_{j, b_j \neq k} \beta_jb_j$$
+        where atleast one of both $\alpha_i$ and $\beta_j$ are non zero otherwise $k$ will lie entirely in $range(A) \; \textrm{or} \; range(B)$ and this is not possible since both $A$ and $B$ are linearly independent sets on account of being basis. Now, $\sum_i\alpha_ia_i$ is a vector lying in $S$ and $\sum_j\beta_jb_j$ is a vector lying in $T$. Therefore, their sum lies in $\mathbb{R}^m$ with components both in $S$ and $T$ which is a contradiction to the fact that $k$ lies completely in $S$ or $T$. Hence, $A \cup B$ is linearly independent.
+
+        Now, we'll prove that $A \cup B$ forms a basis for $\mathbb{R}^m$. Any vector in $S$ can be written as a linear combination of $a_i$'s and any vector in $T$ can be written as a linear combination of $b_j$'s. Now, since any vector $v$ in $\mathbb{R}^m$ can be written as sum of vectors in $S$ and $T$, we observe that $v$ can be written as a linear combination of $a_i$'s and $b_j$'s. Therefore $A \cup B$ forms a basis for $\mathbb{R}^m$.
+        \item We want to find a projector $P$ such that $P$ applied to any vector $v$ gives a projection lying in $S$. Also, any vector that lies in $T$ will have null projection in $S$ since $S$ and $T$ are complementary to each other. Therefore, we have:
+        \begin{equation}
+        Pa_i = a_i \quad \forall i = 1,2,\cdots
+        \end{equation}
+        \begin{equation}
+        Pb_i = \vec{0} \quad \forall i = 1,2,\cdots
+        \end{equation}
+        Using (1) and (2), we can write
+        \begin{equation}
+        PA = A
+        \end{equation}
+        \begin{equation}
+        PB = 0
+        \end{equation}
+        where $A$ and $B$ are the matrices formed by using $a_1, a_2, \cdots$ as columns of $A$ and similarly for $B$.
+        Using (3) and (4), we can write
+        \begin{equation}
+        P[A | B] = A
+        \end{equation}
+        where $[A | B]$ is the matrix formed by stacking matrices $A$ and $B$ side by side. So the columns of $[A | B]$ are $A \cup B$ which we proved in last part that they are linearly independent and form a basis for $\mathbb{R}^m$ and since these columns also lie in $m$ dimensional space, $[A|B]$ is a square matrix which has full rank and thus, it is invertible. Using (5), we can write
+        $$P = A([A|B])^{-1}$$
+    \end{enumerate}
+    \clearpage
+    \item We have the C-inner product between any 2 vectors $u$ and $v$ as
+    $$f(u, v) = u^TCv$$
+    \begin{enumerate}[label=(\alph*)]
+        \item We want to find the C-orthogonal projector matrix $P$ that gives a projection in the direction of $x$. Therefore, for any vector $v$, we have
+        \begin{equation}
+        Pv = \lambda x
+        \end{equation}
+        \begin{equation}
+        f(v, v - Pv) = f(x, v - Pv) = 0
+        \end{equation}
+        Using (7), we have
+        $$x^TC(v - \lambda x) = 0 \Rightarrow \lambda = \frac{x^TCv}{x^TCx}$$
+        Using (6), we have
+        $$Pv = \lambda x = (\frac{x^TCv}{x^TCx})x = (\frac{xx^TC}{x^TCx})v$$
+        Therefore,
+        $$P = \frac{xx^TC}{x^TCx}$$
+        \item We want to compute a factorization of A similar to reduced QR factorization i.e. $A = \hat{X}\hat{R}$ where the columns of $\hat{X}$ are C-orthonormal. Therefore all the inner products and norms in Gram Schmidt algorithm will be replaced by C-inner products and C-norms. Given below is the pseudocode for classical Gram Schmidt algorithm.
+        \begin{enumerate}
+            \item for $j = 1$ to $n$
+            \item $\quad v_j = a_j$
+            \item $\quad$for $i = 1$ to $j - 1$
+            \item $\quad \quad r_{ij} = q_i^TCa_j$
+            \item $\quad \quad v_j = v_j - r_{ij}q_i$
+            \item $\quad r_{jj} = ||v_j||_2 = \sqrt{v_j^TCv_j}$
+            \item $\quad q_j = v_j / r_{jj}$
+        \end{enumerate}
+    \end{enumerate}
+    \item We have
+    $$F = I - 2\frac{vv^T}{v^Tv}, \; v = x - x' \; \textrm{and} \; ||x||_2 = ||x'||_2$$
+    We can write $P = \frac{vv^T}{v^Tv}$ where P is the orthogonal projector in the direction of $v$. Therefore, $P = P^T$ and $P^2 = P$. So,
+    $$F^TF = (I - 2P)^T(I - 2P) = (I - 2P^T)(I - 2P) = (I - 2P)(I - 2P) = I - 4P + 4 P^2 = I - 4P + 4P = I$$
+    Now, we have
+    \begin{equation}
+    Fx = (I - 2\frac{vv^T}{v^Tv})x = (I - 2\frac{vv^T}{v^Tv})x - x' + x' = x - 2(\frac{vv^T}{v^Tv})x - x' + x' = v - 2(\frac{vv^T}{v^Tv})x + x'
+    \end{equation}
+    Now,
+    \begin{equation}
+    v - 2(\frac{vv^T}{v^Tv})x = v - \frac{2}{v^Tv}(vv^T)x = v - \frac{2}{v^Tv}v(v^Tx)
+    \end{equation}
+    Also $||x||_2 = ||x'||_2$ implies $x^Tx = x'^Tx'$, therefore we also have,
+    \begin{equation}
+    v^Tv = (x - x')^T(x - x') = (x^T - x'^T)(x - x') = x^Tx - x^Tx' - x'^Tx + x'^Tx' = 2x^Tx - 2x^Tx' = 2x^T(x - x') = 2x^Tv
+    \end{equation}
+    Putting (5) in (4), we get
+    \begin{equation}
+    v - 2(\frac{vv^T}{v^Tv})x = v - \frac{2}{v^Tv}v(v^Tx) = v - \frac{2}{2x^Tv}(v^Tx)v = v - \frac{2}{2x^Tv}(x^Tv)v = v - v = \vec{0}
+    \end{equation}
+    Putting (6) in (3), we get
+    $$Fx = v - 2(\frac{vv^T}{v^Tv})x + x' = \vec{0} + x' = x'$$
+    \clearpage
+    \item If we write $A$ as $[a_1 \; a_2 \; \cdots \; a_n]$ and $B$ as $[b_1 \; b_2 \; \cdots \; b_n]$ where the respective $a_i$'s and $b_i$'s are column vectors. The property $||b_i||_2 = ||a_i||_2$ is equivalent to $b_i^Tb_i = a_i^Ta_i$. Combined with $b_i^Tb_j = a_i^Ta_j \; \forall i,j$, we can write
+    $$A^TA = B^TB$$
+    Therefore, we want to find a matrix $B$ such that the above property is satisfied.
+
+    Now, the reduced SVD of $A$ is given by $A = \hat{U}\Sigma\hat{V}^T$. $A^TA$ is given by
+    $$A^TA = (\hat{U}\Sigma\hat{V}^T)^T(\hat{U}\Sigma\hat{V}^T) = \hat{V}\Sigma^T\hat{U}^T\hat{U}\Sigma\hat{V}^T = \hat{V}\Sigma\hat{U}^T\hat{U}\Sigma\hat{V}^T$$
+    Now, the columns of $\hat{U}$ are orthonormal. Therefore $\hat{U}^T\hat{U} = I$. Hence,
+    $$A^TA = \hat{V}\Sigma\Sigma\hat{V}^T = (\Sigma\hat{V}^T)^T(\Sigma\hat{V}^T)$$
+    Therefore,
+    $$B = \Sigma\hat{V}^T$$
+    We can clearly observe that $A$ is $m \times n$ and $B$ is $n \times n$. Hence the given $B$ satisfies the required properties and the columns of B are the required vectors.
+    \item Low rank approximation
+    \begin{enumerate}[label=(\alph*)]
+        \item The \texttt{split} and \texttt{join} functions are simple using simple flatten and reshape functions in python.
+        \item We have the full SVD as $A = U\Sigma V^T$. The \texttt{compress} function basically chooses the first $r$ columns of $U$ and $V$ and the first $r$ diagonal elements of $\Sigma$. Therefore if we denote $U$ as $[U_{keep} | U_{discard}]$ where $U_{keep}$ is the matrix formed by the r columns that we are keeping and similarly for $\Sigma$ and $V$, we can write
+        $$A = U\Sigma V^T = [U_{keep} | U_{discard}] \begin{bmatrix}
+            \Sigma_{keep} & 0\\
+            0 & \Sigma_{discard}\\
+        \end{bmatrix} ([V_{keep}] | V_{discard}])^T$$
+        Hence,
+        $$A = [U_{keep}\Sigma_{keep} | U_{discard}\Sigma_{discard}]\begin{bmatrix}
+            V_{keep}^T\\
+            V_{discard}^T\\
+        \end{bmatrix} = (U_k\Sigma_kV_k^T) + (U_d\Sigma_dV_d^T)$$
+        where $k$ and $d$ are short for $keep$ and $discard$.
+        Hence the $r$-rank approximation of $A$ is $U_k\Sigma_kV_k^T$
+        \item The error can be written as
+        $$\frac{||A - A_{approx}||_2}{||A||_2} = \frac{||U_d\Sigma_dV_d^T||_2}{||U\Sigma V^T||_2}$$
+        Now, because $U$ and $V$ are orthogonal and $U_d$ and $V_d$ have orthonormal columns, we have the error as
+        $$error = \frac{||U_d\Sigma_dV_d^T||_2}{||U\Sigma V^T||_2} = \frac{||\Sigma_dV_d^T||_2}{||\Sigma V^T||_2} = \frac{||\Sigma_d||_2}{||\Sigma||_2} = \frac{\sqrt{\sigma_{r+1}^2 + \cdots + \sigma_n^2}}{\sqrt{\sigma_1^2 + \cdots + \sigma_n^2}}$$
+        where $\sigma_i$'s are the singular values of $A$.
+    \end{enumerate}
+\end{enumerate}
+
+\end{document}
